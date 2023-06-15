@@ -1,0 +1,24 @@
+{
+  "name": "rcm-stats",
+  "version": "1.0.2",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ni7r0g3n/rcm-stats.git"
+  },
+  "author": "Fabio Rambaldi",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ni7r0g3n/rcm-stats/issues"
+  },
+  "homepage": "https://github.com/ni7r0g3n/rcm-stats#readme",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.18.2",
+    "mysql": "^2.18.1"
+  }
+}
