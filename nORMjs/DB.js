@@ -1,24 +1,16 @@
 const mysql = require("mysql");
+const MysqlConnector = require("./MysqlConnector");
 
 class DB {
-  connection = null;
+  static connection = MysqlConnector;
 
-  constructor() {
-    this.connection = mysql.createConnection({
-      host: "localhost",
-      user: "root",
-      password: "admin",
-      database: "default",
-    });
-  }
-
-  executeQuery(query) {
+  static executeQuery(query) {
     return this.connectAndExecuteQuery(query).then((result) => {
       return result;
     });
   }
 
-  connectAndExecuteQuery(query) {
+  static connectAndExecuteQuery(query) {
     return new Promise((resolve, reject) => {
       this.connection.connect((err) => {
         if (err) {
@@ -32,6 +24,7 @@ class DB {
             return;
           }
           resolve(result);
+          this.connection.end();
         });
       });
     });

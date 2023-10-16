@@ -12,7 +12,7 @@ class QueryBuilder {
   Model = null;
 
   constructor(Model) {
-    this.DB = new DB();
+    this.DB = DB;
     this.Model = Model;
     this.query = [];
   }
@@ -90,6 +90,9 @@ class QueryBuilder {
     let where = "";
 
     if (typeof value === "undefined") {
+      if (operator === "=") {
+        throw new Error("Cannot lookup by undefined value");
+      }
       value = operator;
       operator = "=";
     }
@@ -100,6 +103,8 @@ class QueryBuilder {
       where = "AND ";
     }
 
+    console.log({ field, operator, value });
+
     this.query.push(where + field + " " + operator + " " + this.escape(value));
     return this;
   }
@@ -108,6 +113,9 @@ class QueryBuilder {
     let where = "";
 
     if (typeof value === "undefined") {
+      if (operator === "=") {
+        throw new Error("Cannot lookup by undefined value");
+      }
       value = operator;
       operator = "=";
     }
@@ -151,6 +159,8 @@ class QueryBuilder {
     let query = this.composeQuery() + " LIMIT 1";
     this.cleanUp();
     return this.DB.executeQuery(query).then((result) => {
+      console.log({ res: result[0] });
+      console.log({ firstResult: new this.Model(result[0]) });
       return this.hydrateModel(result[0]);
     });
   }
