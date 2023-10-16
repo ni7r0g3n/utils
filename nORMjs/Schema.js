@@ -1,3 +1,5 @@
+const DB = require("./DB");
+
 class Blueprint {
   tableName = null;
   fields = {};
@@ -5,8 +7,6 @@ class Blueprint {
   constructor(tableName) {
     this.tableName = tableName;
   }
-
-  // Type-specific methods to define fields
 
   increments(name) {
     this.fields[name] = { type: "INT AUTO_INCREMENT PRIMARY KEY" };
@@ -97,14 +97,19 @@ class Schema {
     const blueprint = new Blueprint(tableName);
     callback(blueprint);
     const migrationQuery = blueprint.generateCreateQuery();
-    return migrationQuery;
+    DB.executeQuery(migrationQuery);
   }
 
   static alter(tableName, callback) {
     const blueprint = new Blueprint(tableName);
     callback(blueprint);
     const alterQuery = blueprint.generateAlterQuery();
-    return alterQuery;
+    DB.executeQuery(alterQuery);
+  }
+
+  static drop(tableName) {
+    const dropQuery = `DROP TABLE ${tableName};`;
+    DB.executeQuery(dropQuery);
   }
 }
 
