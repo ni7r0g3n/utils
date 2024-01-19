@@ -2,72 +2,80 @@ const DB = require("./DB");
 
 class Blueprint {
   tableName = null;
-  fields = {};
+  fields = [];
 
   constructor(tableName) {
     this.tableName = tableName;
   }
+  //unsigned integer primary key
+  id(name) {
+    this.increments(name);
+    return this;
+  }
 
   increments(name) {
-    this.fields[name] = { type: "INT AUTO_INCREMENT PRIMARY KEY" };
+    this.fields.push(`${name} INT UNSIGNED AUTO_INCREMENT PRIMARY KEY`);
     return this;
   }
 
   bigIncrements(name) {
-    this.fields[name] = { type: "BIGINT AUTO_INCREMENT PRIMARY KEY" };
+    this.fields.push(`${name} BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY`);
     return this;
   }
 
   string(name, length = 255) {
-    this.fields[name] = { type: `VARCHAR(${length})` };
+    this.fields.push(`${name} VARCHAR(${length})`);
     return this;
   }
 
   integer(name) {
-    this.fields[name] = { type: "INT" };
+    this.fields.push(`${name} INT`);
     return this;
   }
 
   bigInteger(name) {
-    this.fields[name] = { type: "BIGINT" };
+    this.fields.push(`${name} BIGINT`);
     return this;
   }
 
   float(name) {
-    this.fields[name] = { type: "FLOAT" };
+    this.fields.push(`${name} FLOAT`);
     return this;
   }
 
   unsignedInteger(name) {
-    this.fields[name] = { type: "INT UNSIGNED" };
+    this.fields.push(`${name} INT UNSIGNED`);
     return this;
   }
 
   unsignedBigInteger(name) {
-    this.fields[name] = { type: "BIGINT UNSIGNED" };
+    this.fields.push(`${name} BIGINT UNSIGNED`);
     return this;
   }
 
   date(name) {
-    this.fields[name] = { type: "DATE" };
+    this.fields.push(`${name} DATE`);
     return this;
   }
 
   dateTime(name) {
-    this.fields[name] = { type: "DATETIME" };
+    this.fields.push(`${name} DATETIME`);
     return this;
   }
 
   timestamp(name) {
-    this.fields[name] = { type: "TIMESTAMP" };
+    this.fields.push(`${name} TIMESTAMP`);
     return this;
   }
 
   timestamps() {
-    this.fields["created_at"] = { type: "TIMESTAMP DEFAULT CURRENT_TIMESTAMP" };
-    this.fields["updated_at"] = {
-      type: "TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP",
-    };
+    this.timestamp("created_at");
+    this.timestamp("updated_at");
+    return this;
+  }
+
+  softDeletes() {
+    this.timestamp("deleted_at");
     return this;
   }
 

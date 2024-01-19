@@ -2,8 +2,6 @@
 const MysqlConnector = require("./MysqlConnector");
 
 class DB {
-  static connection = MysqlConnector;
-
   static executeQuery(query) {
     return this.connectAndExecuteQuery(query).then((result) => {
       return result;
@@ -12,19 +10,21 @@ class DB {
 
   static connectAndExecuteQuery(query) {
     return new Promise((resolve, reject) => {
-      this.connection.connect((err) => {
+      MysqlConnector.getConnection((err, connection) => {
         if (err) {
+          console.log(err);
+          connection.release();
           reject(err);
           return;
         }
         console.log("Connected!");
-        this.connection.query(query, (err, result) => {
+        connection.query(query, (err, result) => {
           if (err) {
             reject(err);
             return;
           }
           resolve(result);
-          this.connection.end();
+          connection.release();
         });
       });
     });
