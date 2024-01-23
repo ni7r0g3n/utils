@@ -2,6 +2,8 @@
 const MysqlConnector = require("./MysqlConnector");
 
 class DB {
+  static connection = MysqlConnector;
+
   static executeQuery(query) {
     return this.connectAndExecuteQuery(query).then((result) => {
       return result;

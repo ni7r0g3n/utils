@@ -66,7 +66,7 @@ class Model {
         this.fields.forEach((key) => {
           newObj[key] = result[key];
         });
-        return this.constructor.find(this[this.constructor.primaryKey]);
+        return this.find(obj[this.primaryKey]);
       });
   }
 
@@ -118,6 +118,13 @@ class Model {
       .table(this.table)
       .select("*")
       .where(field, operator, value);
+  }
+
+  static all(){
+    return new QueryBuilder(this)
+      .table(this.table)
+      .select("*")
+      .run();
   }
 
   // static where(field, value) {
