@@ -4,6 +4,7 @@ class Model {
   static table = null;
   static fields = [];
   static primaryKey = "id";
+  static hidden = [];
   // currentModel = null;
 
   // accepts an object that has the same keys as the fields
@@ -19,6 +20,12 @@ class Model {
     }
 
     // this = childModel;
+  }
+
+  static get query(){
+    return new QueryBuilder(this)
+      .table(this.table)
+      .select(...this.fields, this.primaryKey);
   }
 
   static create(obj) {
@@ -40,6 +47,17 @@ class Model {
         });
         return this.find(result.insertId);
       });
+  }
+
+  toJSON (){
+    console.log("toJSON");
+    var jsonformat = Object.keys(this).reduce((obj, key) => {
+      if (["table", "fields", "hidden", ...this.constructor.hidden].includes(key)) return obj;
+      obj[key] = this[key];
+      return obj;
+    }, {});
+    console.log({jsonformat});
+    return jsonformat;
   }
 
   static find(id) {
@@ -116,14 +134,14 @@ class Model {
   static where(field, operator = "=", value) {
     return new QueryBuilder(this)
       .table(this.table)
-      .select("*")
+      .select(...this.fields, this.primaryKey)
       .where(field, operator, value);
   }
 
   static all(){
     return new QueryBuilder(this)
       .table(this.table)
-      .select("*")
+      .select(this.fields, this.primaryKey)
       .run();
   }
 
@@ -144,5 +162,14 @@ class Model {
     });
   }
 }
+
+// Model.prototype.toJSON = () => {
+//   console.log("toJSON");
+//   return this.fields.reduce((obj, key) => {
+//     if (["table", "fields", ...this.constructor.hidden].includes(key)) return obj;
+//     obj[key] = this[key];
+//     return obj;
+//   }, {});
+// }
 
 module.exports = Model;

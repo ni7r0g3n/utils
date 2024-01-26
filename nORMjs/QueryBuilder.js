@@ -1,3 +1,4 @@
+const { log } = require("console");
 const DB = require("./DB");
 
 class QueryBuilder {
@@ -25,6 +26,27 @@ class QueryBuilder {
     this.operation = "SELECT " + fields.join(", ");
     this.requiresFrom = true;
     return this;
+  }
+
+  count() {
+    var query = this.clone();
+    query.operation = "SELECT COUNT(*)";
+    query.requiresFrom = true;
+    return query.run().then((result) => {
+      return result[0]["COUNT(*)"];
+    });
+  }
+
+  clone() {
+    let clone = new QueryBuilder(this.Model);
+    clone.operation = this.operation;
+    clone.requiresFrom = this.requiresFrom;
+    clone.from = this.from;
+    clone.joins = this.joins;
+    clone.sets = this.sets;
+    clone.query = this.query;
+    clone.id = this.id;
+    return clone;
   }
 
   create(obj) {
@@ -64,7 +86,7 @@ class QueryBuilder {
 
   run() {
     let query = this.composeQuery();
-    this.cleanUp();
+    // this.cleanUp();
     return this.DB.executeQuery(query);
   }
 
@@ -87,6 +109,7 @@ class QueryBuilder {
   }
 
   where(field, operator = "=", value) {
+    console.log({ field, operator, value });
     let where = "";
 
     if (typeof value === "undefined") {
